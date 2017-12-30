@@ -1,0 +1,11 @@
+<resources>
+    <string name="now_playing_str">Now Playing</string>
+    <string name="top_rated_str">Top Rated</string>
+    <string name="most_popular_str">Most Popular</string>
+    <string name="app_name">Popular Movies</string>
+    <string name="title_str">title</string>
+    <string name="error_internet">Check your Internet Connection and try again</string>
+    <string name="error_msg">Error Occurred!</string>
+    <string name="overview_str">Overview</string>
+    <string name="on_ten">/10</string>
+</resources>
