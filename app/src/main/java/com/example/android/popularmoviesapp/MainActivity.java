@@ -17,6 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -25,14 +27,13 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ClickListener {
 
-    ProgressBar pgbar;
+    ProgressBar pgBar;
     TextView titleText;
     Toast toast;
     RecyclerView recyclerView;
     MovieAPIinterface mAPI;
-    private List<MovieManager> movieList;
     MovieAdapter movieAdapter;
-    public static final String EXTRA_ID = "movie_id";
+    private List<MovieManager> movieList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Clic
             window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        pgbar = (ProgressBar) findViewById(R.id.pgbar);
+        pgBar = (ProgressBar) findViewById(R.id.pgBar);
         recyclerView = (RecyclerView) findViewById(R.id.rcv);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Clic
 
         if (isOnline()) {
             getMovieData(MDBServiceAPI.SORTBY_DEFAULT);
-            pgbar.setVisibility(View.VISIBLE);
+            pgBar.setVisibility(View.VISIBLE);
         } else
             toast.show();
     }
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Clic
     public boolean onOptionsItemSelected(MenuItem item) {
         int selected = item.getItemId();
         if (isOnline()) {
-            pgbar.setVisibility(View.VISIBLE);
+            pgBar.setVisibility(View.VISIBLE);
             switch (selected) {
                 case R.id.action_now_playing: {
                     titleText.setText(R.string.now_playing_str);
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Clic
             @Override
             public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
                 if (response.isSuccessful()) {
-                    pgbar.setVisibility(View.INVISIBLE);
+                    pgBar.setVisibility(View.INVISIBLE);
                     movieList = response.body().getMovieResults();
                     if (movieList.size() != 0) {
                         setAdapter(recyclerView);
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Clic
     public void onListClick(int index) {
         MovieManager movieClicked = movieList.get(index);
         Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
-        intent.putExtra(EXTRA_ID, movieClicked.getId());
+        intent.putExtra("movieDetails", Parcels.wrap(movieClicked));
         startActivity(intent);
     }
 }

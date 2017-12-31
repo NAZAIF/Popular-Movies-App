@@ -1,7 +1,6 @@
 package com.example.android.popularmoviesapp;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 /**

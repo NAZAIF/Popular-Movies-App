@@ -9,20 +9,18 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import org.parceler.Parcels;
+
 
 public class MovieDetailsActivity extends MainActivity {
 
-    CardView c2;
+    CardView cardView;
     ProgressBar progressBar;
-    ImageView iv_backdrop, iv_poster;
-    TextView tv_rating, tv_release, tv_overview, tv_title;
+    ImageView ivBackdrop, ivPoster;
+    TextView tvRating, tvRelease, tvOverview, tvTitle;
     private MovieManager movieManager;
 
     @Override
@@ -36,56 +34,44 @@ public class MovieDetailsActivity extends MainActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        c2 = (CardView) findViewById(R.id.overview_card);
-        progressBar = (ProgressBar) findViewById(R.id.pgbar);
-        tv_title = (TextView) findViewById(R.id.title_text);
-        iv_backdrop = (ImageView) findViewById(R.id.backdrop_image);
-        iv_poster = (ImageView) findViewById(R.id.poster_image);
-        tv_overview = (TextView) findViewById(R.id.overview_text);
-        tv_release = (TextView) findViewById(R.id.release_text);
-        tv_rating = (TextView) findViewById(R.id.rating_text);
+        cardView = (CardView) findViewById(R.id.overview_card);
+        progressBar = (ProgressBar) findViewById(R.id.pgBar);
+        tvTitle = (TextView) findViewById(R.id.title_text);
+        ivBackdrop = (ImageView) findViewById(R.id.backdrop_image);
+        ivPoster = (ImageView) findViewById(R.id.poster_image);
+        tvOverview = (TextView) findViewById(R.id.overview_text);
+        tvRelease = (TextView) findViewById(R.id.release_text);
+        tvRating = (TextView) findViewById(R.id.rating_text);
 
-        long movieId = getIntent().getExtras().getLong(MainActivity.EXTRA_ID);
+        movieManager = (MovieManager) Parcels.unwrap(getIntent().getParcelableExtra("movieDetails"));
+        getDetails(movieManager);
 
-        getMovieDetails(movieId);
     }
 
     public void back(View view) {
         finish();
     }
 
-    public void getMovieDetails(long id) {
-        progressBar.setVisibility(View.VISIBLE);
-        Call<MovieManager> call = mAPI.getMovieInfo(id);
-        call.enqueue(new Callback<MovieManager>() {
-            @Override
-            public void onResponse(Call<MovieManager> call, Response<MovieManager> response) {
-                c2.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-                movieManager = response.body();
-                tv_rating.setText(movieManager.getRating());
-                tv_rating.setTypeface(null, Typeface.BOLD);
-                tv_release.setText(movieManager.getReleaseDate());
-                tv_overview.setText(movieManager.getOverview());
-                tv_title.setText(movieManager.getTitle());
+    private void getDetails(MovieManager movie) {
+        cardView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+        tvRating.setText(movieManager.getRating());
+        tvRating.setTypeface(null, Typeface.BOLD);
+        tvRelease.setText(movieManager.getReleaseDate());
+        tvOverview.setText(movieManager.getOverview());
+        tvTitle.setText(movieManager.getTitle());
 
-                Picasso.with(MovieDetailsActivity.this)
-                        .load(MDBServiceAPI.POSTER_URL + movieManager.getPoster())
-                        .placeholder(R.drawable.placeholder)
-                        .error(R.drawable.error_img)
-                        .into(iv_poster);
+        Picasso.with(MovieDetailsActivity.this)
+                .load(MDBServiceAPI.POSTER_URL + movieManager.getPoster())
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error_img)
+                .into(ivPoster);
 
-                Picasso.with(MovieDetailsActivity.this)
-                        .load(MDBServiceAPI.BACKDROP_URL + movieManager.getBackdrop())
-                        .placeholder(R.drawable.placeholder_land)
-                        .error(R.drawable.error_img)
-                        .into(iv_backdrop);
-            }
-
-            @Override
-            public void onFailure(Call<MovieManager> call, Throwable t) {
-                Toast.makeText(MovieDetailsActivity.this, "Failure : " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        Picasso.with(MovieDetailsActivity.this)
+                .load(MDBServiceAPI.BACKDROP_URL + movieManager.getBackdrop())
+                .placeholder(R.drawable.placeholder_land)
+                .error(R.drawable.error_img)
+                .into(ivBackdrop);
     }
+
 }

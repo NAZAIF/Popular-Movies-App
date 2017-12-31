@@ -25,12 +25,6 @@ public class MDBServiceAPI {
     public static final String SORTBY_NOW_PLAYING = "now_playing";
     public static final String SORTBY_DEFAULT = SORTBY_POPULAR;
 
-    /**
-     * Add the API KEY in below line
-     */
-
-    public static final String API_KEY = "";
-
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
     private static Retrofit retrofit;
 
@@ -58,7 +52,7 @@ public class MDBServiceAPI {
         public Response intercept(Chain chain) throws IOException {
                 HttpUrl url = chain.request().url()
                         .newBuilder()
-                        .addQueryParameter("api_key", API_KEY)
+                        .addQueryParameter("api_key", BuildConfig.API_KEY)
                         .build();
                 Request request = chain.request().newBuilder().url(url).build();
             return chain.proceed(request);
